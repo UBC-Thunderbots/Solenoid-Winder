@@ -19,20 +19,11 @@ struct CommandDef {
     uint8_t nargs;
 };
 
-#define BULLSHIT(s) const char *const PROGMEM s = #s
-
-namespace {
-BULLSHIT(wire_width);
-BULLSHIT(spool_width);
-BULLSHIT(speed);
-BULLSHIT(go);
-}  // namespace
-
-CommandDef const PROGMEM allCommands[] = {
-    {wire_width, Command::WireWidth, 1},
-    {spool_width, Command::SpoolWidth, 1},
-    {speed, Command::Speed, 1},
-    {go, Command::Go, 1},
+CommandDef const allCommands[] = {
+    {"wire_width", Command::WireWidth, 1},
+    {"spool_width", Command::SpoolWidth, 1},
+    {"speed", Command::Speed, 1},
+    {"go", Command::Go, 1},
 };
 
 struct ParseResult {
