@@ -1,4 +1,6 @@
 #include "libraries.hpp"
+#include "serialparser/serialparser.hpp"
+#include "util.hpp"
 
 // mm
 float wire_width = 0.8118;
@@ -9,14 +11,26 @@ float running = false;
 uint16_t n_passes = 0;
 int8_t direction = 1;
 
+namespace Pins {
+int const M1STEP = 5;  // D5
+int const M1DIR = 2;   // D2
+
+int const M2STEP = 6;  // D6
+int const M2DIR = 3;   // D3
+
+int const ENABLE = 8;  // D8
+}  // namespace Pins
+
 // 1.8-degree stepper
 long const STEPS_PER_REV = 200;
 // 1.8-degree stepper;
 // 2mm pitch T8 thread
 float const STEPS_PER_MM = 200.f /* step/rev */ / 2.f /* mm/rev */;
 
-auto lateral_stepper = AccelStepper{};
-auto rotational_stepper = AccelStepper{};
+auto lateral_stepper =
+    AccelStepper{AccelStepper::DRIVER, Pins::M1STEP, Pins::M1DIR};
+auto rotational_stepper =
+    AccelStepper{AccelStepper::DRIVER, Pins::M2STEP, Pins::M2DIR};
 auto both = MultiStepper{};
 
 float revs_for_lateral_dist(float dist) { return (dist / wire_width); }
@@ -26,7 +40,7 @@ long steps_for_revs(float revs) { return (revs / STEPS_PER_REV); }
 long steps_for_lateral_mm(float dist) { return dist / STEPS_PER_MM; }
 
 void print_help_messages() {
-    Serial.println(
+    Serial.print(
         F("Commands:\n"
           "w {wire width in mm}\n"
           "s {spool width in mm}\n"
@@ -51,30 +65,38 @@ void clear_positions() {
 }
 
 void handle_serial_command() {
-    char cmd = Serial.read();
-    Serial.read();
-    float n = Serial.parseFloat();
-    switch (cmd) {
-        case 'w':
-            wire_width = n;
+    auto res = serialparser::parse(&Serial);
+    switch (res.cmd) {
+        case serialparser::Command::Go:
+            Serial.println(F("Going!!"));
             break;
-        case 's':
-            spool_width = n;
+
+        case serialparser::Command::Speed:
+            Serial.print(F("Speed is now: "));
+            Serial.println(res.args[0]);
             break;
-        case 'z':
-            rev_per_s = n;
+
+        case serialparser::Command::SpoolWidth:
+            Serial.print(F("SpoolWidth is now: "));
+            Serial.println(res.args[0]);
             break;
-        case 'G':
-            n_passes = n;
-            running = true;
+
+        case serialparser::Command::WireWidth:
+            Serial.print(F("WireWidth is now: "));
+            Serial.println(res.args[0]);
             break;
+
+        case serialparser::Command::None:
         default:
-            Serial.println(F("Unrecognized command"));
+            Serial.println(F("Unknown command"));
             break;
     }
 }
 
 void setup() {
+    Serial.begin(9600);
+    pinMode(Pins::ENABLE, OUTPUT);
+    digitalWrite(Pins::ENABLE, 0);  // active low
     print_help_messages();
     both.addStepper(rotational_stepper);
     both.addStepper(lateral_stepper);
@@ -95,7 +117,7 @@ void setup() {
                 move_dist_synchronized(direction * spool_width);
             }
         }
-        if (Serial.available()) {
+        if (Serial.available() > 0) {
             handle_serial_command();
         }
     }
