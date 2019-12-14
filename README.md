@@ -34,6 +34,10 @@ Set up the spool holder at least 30cm away from the winder while in use in
 order to avoid any possible inconsistencies caused by winding of the source
 spool. The intended attachment mechanism for this is to clamp it to the table.
 
+If the winder is doing something bad, you can stop it by pressing the reset
+button on the blue microcontroller board, or by turning off the motor power
+supply. Either of these actions will safely bring the winder to a halt.
+
 <!-- TODO: put in a photo -->
 
 ### CLI operation
