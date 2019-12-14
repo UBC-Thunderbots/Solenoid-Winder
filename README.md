@@ -47,6 +47,14 @@ hand with the power off or by using `move_lateral {distance_in_mm}`. Note
 that the positive direction is marked on the base of the winder and is
 oriented away from the stepper on the lead screw.
 
+Once you have the spool width and the wire width set up, you can start
+winding by running `go {n_passes}`. Note that each winding back and forth is
+counted as two passes. Also, the direction is reversed after every pass but
+is retained between runs of the `go` command. This means that if you have
+already wound some turns and want to wind some more, you can safely type
+`go 1` for example, and put on another layer. If you want to start from the
+beginning, type `reset`.
+
 ## Development
 
 This project is developed using [PlatformIO](https://platformio.org/).
