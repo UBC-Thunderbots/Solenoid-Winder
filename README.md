@@ -59,4 +59,4 @@ Termite window before uploading or it will fail to upload):
 
 ## Board documentation
 
-![board docs photo](./SolenoidWinderPCB.png)
+![board docs photo](./SolenoidWinderPCBDiagram.png)
