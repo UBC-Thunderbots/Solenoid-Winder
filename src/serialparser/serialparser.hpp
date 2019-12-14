@@ -11,6 +11,9 @@ enum class Command {
     SpoolWidth,
     Speed,
     Go,
+    MoveLateral,
+    MoveRotational,
+    Reset,
 };
 
 struct CommandDef {
@@ -24,6 +27,9 @@ CommandDef const allCommands[] = {
     {"spool_width", Command::SpoolWidth, 1},
     {"speed", Command::Speed, 1},
     {"go", Command::Go, 1},
+    {"move_lateral", Command::MoveLateral, 1},
+    {"move_rotational", Command::MoveRotational, 1},
+    {"reset", Command::Reset, 0},
 };
 
 struct ParseResult {
