@@ -80,6 +80,7 @@ void reset() {
     rotational_stepper.setMaxSpeed(100);
     rotational_stepper.setSpeed(100);
     direction = 1;
+    running = false;
 }
 
 void blink(int pin, int time_ms) {
