@@ -13,6 +13,7 @@ enum class Command {
     Go,
     MoveLateral,
     MoveRotational,
+    InvertDirection,
     Reset,
 };
 
@@ -29,6 +30,7 @@ CommandDef const allCommands[] = {
     {"go", Command::Go, 1},
     {"move_lateral", Command::MoveLateral, 1},
     {"move_rotational", Command::MoveRotational, 1},
+    {"invert_direction", Command::InvertDirection, 0},
     {"reset", Command::Reset, 0},
 };
 

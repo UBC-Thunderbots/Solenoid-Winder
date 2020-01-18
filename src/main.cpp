@@ -53,6 +53,7 @@ void print_help_messages() {
           "go {n_passes}: START: do this many passes back and forth\n"
           "move_lateral {mm}\n"
           "move_rotational {turns}\n"
+          "invert_direction -- reverse winding direction from current state\n"
           "reset -- set default parameters, initial direction"));
 }
 
@@ -141,6 +142,12 @@ void handle_serial_command() {
                 ;
             break;
 
+        case serialparser::Command::InvertDirection:
+            Serial.print(F("Inverting wind direction, now "));
+            direction = -direction;
+            Serial.println(direction);
+            break;
+
         case serialparser::Command::Reset:
             reset();
             break;
@@ -168,13 +175,15 @@ void setup() {
                     lateral_stepper.targetPosition() &&
                 rotational_stepper.currentPosition() ==
                     rotational_stepper.targetPosition()) {
-                // reached target
+                clear_positions();
+                direction = -direction;
+
+                // done all the winding
                 if (n_passes == 0) {
                     Serial.println(F("Done!"));
                     running = false;
+                    continue;  // stop running this routine
                 }
-                clear_positions();
-                direction = -direction;
                 --n_passes;
                 blink(LED_BUILTIN, 250);
                 delay(100);
