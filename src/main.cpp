@@ -8,8 +8,7 @@ float spool_width = 25;
 
 float running = false;
 uint16_t n_passes = 0;
-// wind away from the rotation stepper
-int8_t direction = -1;
+int8_t direction = 1;
 
 namespace Pins {
 int const M1STEP = 5;  // D5
@@ -98,6 +97,12 @@ void handle_serial_command() {
             Serial.println(F("Going!!"));
             n_passes = floor(res.args[0]);
             running = true;
+
+            // sinful; basically we want it to start in the same direction as it
+            // did the last round in, so we negate the direction = -direction in
+            // the running loop here
+            direction = -direction;
+
             lateral_stepper.setAcceleration(1000);
             rotational_stepper.setAcceleration(1000);
             // lateral_stepper.move(res.args[0] * 8000);
