@@ -115,3 +115,8 @@ Termite window before uploading or it will fail to upload):
   clamp the winder to the table
 - Put proper connectors on the power input and stepper motors
 - Tailstock?
+- Hack the stepper driver boards by installing bodge wires and cutting the
+  CFG pins on the headers so we get microstepping (currently it does full
+  stepping because of a bug in the control board where the configuration pins
+  should have a pull-up on the other side of the jumpers but actually have a
+  pull-down)
