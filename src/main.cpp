@@ -8,7 +8,8 @@ float spool_width = 25;
 
 float running = false;
 uint16_t n_passes = 0;
-int8_t direction = 1;
+// wind away from the rotation stepper
+int8_t direction = -1;
 
 namespace Pins {
 int const M1STEP = 5;  // D5
