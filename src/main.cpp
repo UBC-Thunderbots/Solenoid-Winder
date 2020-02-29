@@ -54,7 +54,7 @@ void print_help_messages() {
           "move_lateral {mm}\n"
           "move_rotational {turns}\n"
           "invert_direction -- reverse winding direction from current state\n"
-          "reset -- set default parameters, initial direction"));
+          "reset -- set default parameters, initial direction\n"));
 }
 
 void move_both(long rotational, long lateral) {
@@ -88,6 +88,16 @@ void blink(int pin, int time_ms) {
     digitalWrite(pin, HIGH);
     delay(time_ms);
     digitalWrite(pin, LOW);
+}
+
+void print_status() {
+    Serial.print("Wire width: ");
+    Serial.print(wire_width);
+    Serial.print(", Spool width: ");
+    Serial.print(spool_width);
+    Serial.print(", Winding towards ");
+    Serial.print(direction == 1 ? '+' : '-');
+    Serial.print("X\n");
 }
 
 void handle_serial_command() {
@@ -163,6 +173,13 @@ void handle_serial_command() {
             Serial.println(F("Unknown command"));
             break;
     }
+    if (res.cmd != serialparser::Command::Go) {
+        // don't print status report when running a Go because it will report a
+        // confusing and incorrect winding direction as of the time the winding
+        // completes (it will have been inverted by the time you run the
+        // command)
+        print_status();
+    }
 }
 
 void setup() {
@@ -173,6 +190,7 @@ void setup() {
     both.addStepper(rotational_stepper);
     both.addStepper(lateral_stepper);
     reset();
+    print_status();
 
     while (true) {
         if (running) {
